@@ -7,6 +7,9 @@ import { UserModel } from './models/user'
 import { companyRouter } from './routes/company'
 
 const app = express()
+app.use(express.json());
+
+// TODO uggly error showing on invalid JSON input 
 
 const PORT = 8080
 
@@ -64,6 +67,7 @@ mongoose.connect(mongoDbUrl, {})
    // companyModel.save();
    
    app.use('/api/company', companyRouter);
+
    
    // app.get('/', (req: express.Request, res: express.Response) => {
    //    res.setHeader('Content-Type', 'text/html')
