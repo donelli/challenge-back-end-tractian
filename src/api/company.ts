@@ -11,6 +11,12 @@ const companyModelToObject = (companyModel: any) => {
    }
 }
 
+const usersModelToObject = (usersModel: any) => {
+   return {id: usersModel.id,
+      name: usersModel.name
+   }
+}
+
 const getAllCompanies = async (req: Request, res: Response) => {
    
    const companiesModel = await CompanyModel.find();
@@ -101,7 +107,7 @@ const updateCompany = async (req: Request, res: Response) => {
       return res.status(StatusCodes.BAD_REQUEST).send(createError('A company with this name already exists'));
    }
    
-   companyModel.name = name;
+   // companyModel.name = name;
    
    companyModel.save()
    .then((company) => {
@@ -149,10 +155,86 @@ const deleteCompany = async (req: Request, res: Response) => {
    res.sendStatus(StatusCodes.OK);
 };
 
+const getUsersByCompanyId = async (req: Request, res: Response) => {
+
+   const { companyId } = req.params;
+   
+   try {
+      validObjectIdOrError(companyId, 'Invalid company id');
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+   
+   const companyModel = await CompanyModel.findById(companyId);
+
+   if (!companyModel) {
+      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
+   }
+
+   const users = [];
+
+   for (const user of companyModel.users) {
+      users.push(usersModelToObject(user));
+   }
+   
+   res.status(StatusCodes.OK).send({
+      count: users.length,
+      data: users
+   });
+   
+};
+
+const createUserInCompany = async (req: Request, res: Response) => {
+   
+   const { companyId } = req.params;
+   const { name } = req.body;
+   
+   try {
+      validObjectIdOrError(companyId, 'Invalid company id');
+      isOfTypeOrError(name, 'string', 'Invalid user name')
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+   
+   const companyModel = await CompanyModel.findById(companyId);
+
+   if (!companyModel) {
+      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
+   }
+
+   // TODO check if user name already exists in company
+   
+   companyModel.users.push({
+      name
+   });
+   
+   companyModel.save()
+   .then((company) => {
+      
+      console.log(company);
+      
+      // TODO return user object
+      
+      res.status(StatusCodes.OK).send({
+         data: companyModelToObject(company)
+      });
+      
+   })
+   .catch(err => {
+      
+      console.log(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(createError('Error adding user'));
+      
+   });
+
+};
+
 export {
    getAllCompanies,
    createCompany,
    getCompanyById,
    updateCompany,
-   deleteCompany
+   deleteCompany,
+   getUsersByCompanyId,
+   createUserInCompany
 }

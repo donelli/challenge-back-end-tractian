@@ -96,3 +96,33 @@ In case of an error, the API returns the object below describing the error that 
 
 - `DELETE /api/company/:id` - Delete a company by id
 
+- `GET /api/company/:companyId/user` - Get all users from a company
+```json
+// Response body:
+{
+   "count": "number",
+   "data": [
+      {
+         "id": "string",
+         "name": "string"
+      },
+   ]
+}
+```
+
+- `POST /api/company/:companyId/user` - Create a new user in a specific company
+- `PUT /api/company/:companyId/user/:userId` - Updates a user in a specific company
+```json
+// Request body:
+{
+   "name": "string"
+}
+
+// Response body:
+{
+   "data": {
+      "id": "string",
+      "name": "string"
+   }
+}
+```
