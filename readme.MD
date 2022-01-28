@@ -37,6 +37,10 @@ In addition to the required libraries, you can use anything else and at the end 
 
 ## Implementation
 
+### Heroku
+
+This app is deployed to Heroku. Url: [http://challenge-back-end-tractian.herokuapp.com/](http://challenge-back-end-tractian.herokuapp.com/)
+
 ### Errors
 
 In case of an error, the API returns the object below describing the error that occurs
