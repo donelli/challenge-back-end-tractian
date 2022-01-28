@@ -90,8 +90,37 @@ const updateCompany = (req: Request, res: Response) => {
    res.send('TODO create company by id: ' + req.params.id)
 };
 
-const deleteCompany = (req: Request, res: Response) => {
-   res.send('TODO delete company by id: ' + req.params.id)
+const deleteCompany = async (req: Request, res: Response) => {
+  
+   const { id } = req.params;
+   
+   try {
+      isOfTypeOrError(id, 'string', 'Invalid company id')
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(4, error));
+   }
+   
+   if (!isValidObjectId(id)) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(5, 'Invalid company id'));
+   }
+   
+   const companyModel = await CompanyModel.findById(id);
+
+   if (!companyModel) {
+      return res.status(StatusCodes.NOT_FOUND).send(createError(6, 'Company not found'));
+   }
+
+   // TODO check if company has users
+   // TODO check if company has units
+   
+   try {
+      await companyModel.remove();
+   } catch (err) {
+      console.error(err);
+      res.status(StatusCodes.BAD_REQUEST).send(createError(7, 'Error deleting company'));
+   }
+   
+   res.sendStatus(StatusCodes.OK);
 };
 
 export {
