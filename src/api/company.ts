@@ -1,4 +1,4 @@
-import { createError, existsOrError, isOfTypeOrError } from './../utils';
+import { createError, existsOrError, isOfTypeOrError, validObjectIdOrError } from './../utils';
 
 import { Request, Response } from 'express'
 import { CompanyModel } from '../models/company'
@@ -60,13 +60,9 @@ const getCompanyById = async (req: Request, res: Response) => {
    const { id } = req.params;
    
    try {
-      isOfTypeOrError(id, 'string', 'Invalid company id')
+      validObjectIdOrError(id, 'Invalid company id');
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
-   }
-   
-   if (!isValidObjectId(id)) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError('Invalid company id'));
    }
    
    const companyModel = await CompanyModel.findById(id);
@@ -91,13 +87,9 @@ const deleteCompany = async (req: Request, res: Response) => {
    const { id } = req.params;
    
    try {
-      isOfTypeOrError(id, 'string', 'Invalid company id')
+      validObjectIdOrError(id, 'Invalid company id');
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
-   }
-   
-   if (!isValidObjectId(id)) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError('Invalid company id'));
    }
    
    const companyModel = await CompanyModel.findById(id);
