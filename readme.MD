@@ -29,21 +29,31 @@ Differentials:
 - Design Standard (Clean Code/Clean Architecture).
 
 
-<hr>
-
 !!! Please, be able to abstract well the presented problem and define it yourself which data you consider most important. Think with the user's head: What does an industry person need to know about their assets?
 
 In addition to the required libraries, you can use anything else and at the end publish your code on GitHub and deploy the application (Heroku suggestion) because we want to see it online, then send us the links. 🔥
 
+<hr>
 
-## Endpoints
+## Implementation
+
+### Errors
+
+In case of an error, the API returns the object below describing the error that occurs
+```json
+{
+   "message": "string"
+}
+```
+
+### Endpoints
 
 - `GET /api/company` - Get all companies
 ```json
 // Response body:
 {
    "count": "number",
-   "companies": [
+   "data": [
       {
          "id": "string",
          "name": "string"
@@ -52,7 +62,19 @@ In addition to the required libraries, you can use anything else and at the end 
 }
 ```
 
+- `GET /api/company/:id` - Get company by id
+```json
+// Response body:
+{
+   "data": {
+      "id": "string",
+      "name": "string"
+   }
+}
+```
+
 - `POST /api/company` - Create a new company
+- `PUT /api/company/:id` - Updates a company
 ```json
 // Request body:
 {
@@ -61,7 +83,12 @@ In addition to the required libraries, you can use anything else and at the end 
 
 // Response body:
 {
-   "id": "string",
-   "name": "string"
+   "data": {
+      "id": "string",
+      "name": "string"
+   }
 }
 ```
+
+- `DELETE /api/company/:id` - Delete a company by id
+
