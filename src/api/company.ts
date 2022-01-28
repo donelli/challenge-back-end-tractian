@@ -36,12 +36,12 @@ const createCompany = async (req: Request, res: Response) => {
       isOfTypeOrError(name, 'string', 'Invalid company name')
       existsOrError(name, 'Invalid company name');
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(2, error));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
    const companyModel = await CompanyModel.findOne({ name: name });
    if (companyModel) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(3, 'A company with this name already exists'));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError('A company with this name already exists'));
    }
 
    const company = new CompanyModel({
@@ -62,17 +62,17 @@ const getCompanyById = async (req: Request, res: Response) => {
    try {
       isOfTypeOrError(id, 'string', 'Invalid company id')
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(4, error));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
    if (!isValidObjectId(id)) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(5, 'Invalid company id'));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError('Invalid company id'));
    }
    
    const companyModel = await CompanyModel.findById(id);
 
    if (!companyModel) {
-      return res.status(StatusCodes.NOT_FOUND).send(createError(6, 'Company not found'));
+      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
    }
    
    const companyObject = companyModelToObject(companyModel);
@@ -93,17 +93,17 @@ const deleteCompany = async (req: Request, res: Response) => {
    try {
       isOfTypeOrError(id, 'string', 'Invalid company id')
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(4, error));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
    if (!isValidObjectId(id)) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(5, 'Invalid company id'));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError('Invalid company id'));
    }
    
    const companyModel = await CompanyModel.findById(id);
 
    if (!companyModel) {
-      return res.status(StatusCodes.NOT_FOUND).send(createError(6, 'Company not found'));
+      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
    }
 
    // TODO check if company has users
@@ -113,7 +113,7 @@ const deleteCompany = async (req: Request, res: Response) => {
       await companyModel.remove();
    } catch (err) {
       console.error(err);
-      res.status(StatusCodes.BAD_REQUEST).send(createError(7, 'Error deleting company'));
+      res.status(StatusCodes.BAD_REQUEST).send(createError('Error deleting company'));
    }
    
    res.sendStatus(StatusCodes.OK);

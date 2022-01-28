@@ -4,9 +4,8 @@
  * @param code internal error code
  * @param msg error message
  */
-export const createError = (code: number, msg: string) => {
+export const createError = (msg: string) => {
    return {
-      code,
       message: msg
    };
 }
