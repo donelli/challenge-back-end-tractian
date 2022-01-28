@@ -1,8 +1,14 @@
-import * as mongoose from 'mongoose'
-import { UserSchema } from './user';
-import { UnitSchema } from './unit'
+import { Schema, model } from 'mongoose'
+import { User, UserSchema } from './user';
+import { Unit, UnitSchema } from './unit'
 
-const CompanySchema = new mongoose.Schema({
+interface Company {
+  name: string,
+  users: User[],
+  units: Unit[]
+}
+
+const CompanySchema = new Schema<Company>({
   name: {
     type: String,
     required: true
@@ -11,6 +17,6 @@ const CompanySchema = new mongoose.Schema({
   units: [UnitSchema]
 })
 
-const CompanyModel = mongoose.model("Company", CompanySchema);
+const CompanyModel = model("Company", CompanySchema);
 
 export { CompanyModel }

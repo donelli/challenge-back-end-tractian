@@ -7,7 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 
 const companyModelToObject = (companyModel: any) => {
    return {
-      id: companyModel._id,
+      id: companyModel.id,
       name: companyModel.name
    }
 }

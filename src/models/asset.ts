@@ -1,7 +1,17 @@
 
-import * as mongoose from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-const AssetSchema = new mongoose.Schema({
+interface Asset {
+   name: string,
+   description: string,
+   model: string,
+   owner: string,
+   status: string,
+   image: string,
+   health_level: Number,
+}
+
+const AssetSchema = new Schema<Asset>({
    name: {
       type: String,
       required: true
@@ -32,6 +42,6 @@ const AssetSchema = new mongoose.Schema({
    }
 })
 
-const AssetModel = mongoose.model("Asset", AssetSchema);
+const AssetModel = model("Asset", AssetSchema);
 
-export { AssetSchema, AssetModel }
+export { AssetSchema, AssetModel, Asset }

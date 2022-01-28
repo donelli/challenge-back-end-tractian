@@ -1,8 +1,13 @@
 
-import * as mongoose from 'mongoose'
-import { AssetSchema } from './asset'
+import { Schema, model } from 'mongoose'
+import { Asset, AssetSchema } from './asset'
 
-const UnitSchema = new mongoose.Schema({
+interface Unit {
+   name: string,
+   assets: Asset[]
+}
+
+const UnitSchema = new Schema<Unit>({
    name: {
       type: String,
       required: true
@@ -10,6 +15,6 @@ const UnitSchema = new mongoose.Schema({
    assets: [AssetSchema]
 })
 
-const UnitModel = mongoose.model("Unit", UnitSchema);
+const UnitModel = model("Unit", UnitSchema);
 
-export { UnitSchema, UnitModel }
+export { UnitSchema, UnitModel, Unit }
