@@ -2,7 +2,6 @@ import { isValidObjectId } from 'mongoose';
 
 /**
  * Generates a object describing an error to send to the client
- * @param code internal error code
  * @param msg error message
  */
 export const createError = (msg: string) => {
