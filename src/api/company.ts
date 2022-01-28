@@ -30,11 +30,7 @@ const getAllCompanies = async (req: Request, res: Response) => {
 
 const createCompany = async (req: Request, res: Response) => {
 
-   if (!req.body) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(1, 'Invalid company data'));
-   }
-
-   const { name } = req.params;
+   const { name } = req.body;
    
    try {
       isOfTypeOrError(name, 'string', 'Invalid company name')
