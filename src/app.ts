@@ -2,8 +2,11 @@
 import * as express from 'express'
 import { initMongoose } from './config/db';
 import { companyRouter } from './routes/company'
+import * as dotenv from 'dotenv'
 
 // TODO uggly error showing on invalid JSON input 
+
+dotenv.config()
 
 const app = express()
 app.use(express.json());
