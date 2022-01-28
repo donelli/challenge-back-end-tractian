@@ -2,6 +2,8 @@ import { createError, existsOrError, isOfTypeOrError } from './../utils';
 
 import { Request, Response } from 'express'
 import { CompanyModel } from '../models/company'
+import { isValidObjectId } from 'mongoose';
+import { StatusCodes } from 'http-status-codes';
 
 const companyModelToObject = (companyModel: any) => {
    return {
@@ -20,32 +22,30 @@ const getAllCompanies = async (req: Request, res: Response) => {
       companies.push(companyModelToObject(companyModel));
    }
    
-   res.send({
+   res.status(StatusCodes.OK).send({
       count: companies.length,
-      companies
+      data: companies
    });
 }
 
 const createCompany = async (req: Request, res: Response) => {
-   
-   console.log(req.body);
-   
+
    if (!req.body) {
-      return res.status(400).send(createError(1, 'Invalid company data'));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(1, 'Invalid company data'));
    }
 
-   try {
-      isOfTypeOrError(req.body.name, 'string', 'Invalid company name')
-      existsOrError(req.body.name, 'Invalid company name');
-   } catch (error) {
-      return res.status(400).send(createError(2, error));
-   }
+   const { name } = req.params;
    
-   const name = req.body.name;
+   try {
+      isOfTypeOrError(name, 'string', 'Invalid company name')
+      existsOrError(name, 'Invalid company name');
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(2, error));
+   }
    
    const companyModel = await CompanyModel.findOne({ name: name });
    if (companyModel) {
-      return res.status(400).send(createError(3, 'A company with this name already exists'));
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(3, 'A company with this name already exists'));
    }
 
    const company = new CompanyModel({
@@ -54,11 +54,36 @@ const createCompany = async (req: Request, res: Response) => {
    
    const response = await company.save();
    
-   res.send(companyModelToObject(response));
+   res.status(StatusCodes.CREATED).send({
+      data: companyModelToObject(response)
+   });
 };
 
-const getCompanyById = (req: Request, res: Response) => {
-   res.send('TODO get company by id: ' + req.params.id)
+const getCompanyById = async (req: Request, res: Response) => {
+
+   const { id } = req.params;
+   
+   try {
+      isOfTypeOrError(id, 'string', 'Invalid company id')
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(4, error));
+   }
+   
+   if (!isValidObjectId(id)) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(5, 'Invalid company id'));
+   }
+   
+   const companyModel = await CompanyModel.findById(id);
+
+   if (!companyModel) {
+      return res.status(StatusCodes.NOT_FOUND).send(createError(6, 'Company not found'));
+   }
+   
+   const companyObject = companyModelToObject(companyModel);
+
+   res.status(StatusCodes.OK).send({
+      data: companyObject
+   })
 };
 
 const updateCompany = (req: Request, res: Response) => {
