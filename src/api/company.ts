@@ -2,7 +2,6 @@ import { createError, existsOrError, isOfTypeOrError, validObjectIdOrError } fro
 
 import { Request, Response } from 'express'
 import { CompanyModel } from '../models/company'
-import { isValidObjectId } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
 
 const companyModelToObject = (companyModel: any) => {
@@ -78,9 +77,48 @@ const getCompanyById = async (req: Request, res: Response) => {
    })
 };
 
-const updateCompany = (req: Request, res: Response) => {
-   res.send('TODO create company by id: ' + req.params.id)
-};
+const updateCompany = async (req: Request, res: Response) => {
+   
+   const { id } = req.params;
+   const { name } = req.body;
+   
+   try {
+      validObjectIdOrError(id, 'Invalid company id');
+      isOfTypeOrError(name, 'string', 'Invalid company name')
+      existsOrError(name, 'Invalid company name');
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+   
+   const companyModel = await CompanyModel.findById(id);
+
+   if (!companyModel) {
+      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
+   }
+
+   const companyNameModel = await CompanyModel.findOne({ name: name });
+   if (companyNameModel && companyNameModel.id !== id) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError('A company with this name already exists'));
+   }
+   
+   companyModel.name = name;
+   
+   companyModel.save()
+   .then((company) => {
+      
+      res.status(StatusCodes.OK).send({
+         data: companyModelToObject(company)
+      });
+      
+   })
+   .catch(err => {
+      
+      console.log(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(createError('Error saving company'));
+      
+   });
+   
+}
 
 const deleteCompany = async (req: Request, res: Response) => {
   
