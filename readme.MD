@@ -52,7 +52,9 @@ In case of an error, the API returns the object below describing the error that 
 
 ### Endpoints
 
-- `GET /api/v1/company` - Get all companies
+#### Companies
+
+- `GET /api/v1/companies` - Get all companies
 ```json
 // Response body:
 {
@@ -66,7 +68,7 @@ In case of an error, the API returns the object below describing the error that 
 }
 ```
 
-- `GET /api/v1/company/:id` - Get company by id
+- `GET /api/v1/companies/:id` - Get company by id
 ```json
 // Response body:
 {
@@ -77,8 +79,8 @@ In case of an error, the API returns the object below describing the error that 
 }
 ```
 
-- `POST /api/v1/company` - Create a new company
-- `PUT /api/v1/company/:id` - Updates a company
+- `POST /api/v1/companies` - Create a new company
+- `PUT /api/v1/companies/:id` - Updates a company
 ```json
 // Request body:
 {
@@ -94,9 +96,11 @@ In case of an error, the API returns the object below describing the error that 
 }
 ```
 
-- `DELETE /api/v1/company/:id` - Delete a company by id
+- `DELETE /api/v1/companies/:id` - Delete a company by id
 
-- `GET /api/v1/company/:companyId/user` - Get all users from a company
+#### Users
+
+- `GET /api/v1/companies/:companyId/users` - Get all users from a company
 ```json
 // Response body:
 {
@@ -110,8 +114,19 @@ In case of an error, the API returns the object below describing the error that 
 }
 ```
 
-- `POST /api/v1/company/:companyId/user` - Create a new user in a specific company
-- `PUT /api/v1/company/:companyId/user/:userId` - Updates a user in a specific company
+- `GET /api/v1/companies/:companyId/users/:userId` - Updates a user in a specific company
+```json
+// Response body:
+{
+   "data": {
+      "id": "string",
+      "name": "string"
+   }
+}
+```
+
+- `POST /api/v1/companies/:companyId/users` - Create a new user in a specific company
+- `PUT /api/v1/companies/:companyId/users/:userId` - Updates a user in a specific company
 ```json
 // Request body:
 {
@@ -126,3 +141,5 @@ In case of an error, the API returns the object below describing the error that 
    }
 }
 ```
+
+- `DELETE /api/v1/companies/:companyId/users/:userId` - Delete a company by id
