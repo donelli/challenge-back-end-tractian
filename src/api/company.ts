@@ -12,6 +12,8 @@ const companyModelToObject = (companyModel: any) => {
 }
 
 const findCompanyModelOrError = async (companyId: string) => {
+
+   validObjectIdOrError(companyId, 'Invalid company id');
    
    const companyModel = await CompanyModel.findById(companyId);
 
@@ -72,8 +74,6 @@ const getCompanyById = async (req: Request, res: Response) => {
    
    try {
       
-      validObjectIdOrError(id, 'Invalid company id');
-      
       companyModel = await findCompanyModelOrError(id);
       
    } catch (error) {
@@ -94,7 +94,6 @@ const updateCompany = async (req: Request, res: Response) => {
    
    try {
       
-      validObjectIdOrError(id, 'Invalid company id');
       isOfTypeOrError(name, 'string', 'Invalid company name')
       existsOrError(name, 'Invalid company name');
       
@@ -135,8 +134,6 @@ const deleteCompany = async (req: Request, res: Response) => {
    
    try {
       
-      validObjectIdOrError(id, 'Invalid company id');
-
       companyModel = await findCompanyModelOrError(id);
       
    } catch (error) {
