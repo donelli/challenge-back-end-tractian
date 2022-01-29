@@ -117,7 +117,35 @@ const getUserById = async (req: Request, res: Response) => {
 }
 
 const deleteUser = async (req: Request, res: Response) => {
-   res.send('not implemented');
+   
+   const { companyId, userId } = req.params;
+   let companyModel, userIndex;
+   
+   try {
+      
+      const res = await findCompanyAndUserOrError(companyId, userId);
+      companyModel = res.companyModel;
+      userIndex = res.userIndex;
+      
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+
+   companyModel.users.splice(userIndex, 1);
+   
+   companyModel.save()
+   .then(() => {
+      
+      res.sendStatus(StatusCodes.OK);
+      
+   })
+   .catch(err => {
+      
+      console.log(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(createError('Error deleting user'));
+      
+   });
+
 }
 
 const updateUser = async (req: Request, res: Response) => {
