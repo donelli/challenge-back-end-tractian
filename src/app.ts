@@ -1,8 +1,8 @@
 
 import * as express from 'express'
 import { initMongoose } from './config/db';
-import { companyRouter } from './routes/company'
 import * as dotenv from 'dotenv'
+import { mainRouter } from './routes';
 
 // TODO uggly error showing on invalid JSON input 
 
@@ -16,7 +16,7 @@ initMongoose()
 
    const PORT = process.env.PORT
    
-   app.use('/api/company', companyRouter);
+   app.use('/api/v1/', mainRouter);
 
    app.listen(PORT, () => console.log(`app running on port ${PORT}`))
    
