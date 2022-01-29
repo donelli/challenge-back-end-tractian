@@ -209,6 +209,10 @@ const createUserInCompany = async (req: Request, res: Response) => {
    
    // TODO check if user name already exists in company
    
+   if (companyModel.users.find(user => user.name === name)) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError('A user with this name already exists in this company'));
+   }
+   
    companyModel.users.push({
       name
    });
