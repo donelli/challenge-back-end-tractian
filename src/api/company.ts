@@ -17,6 +17,17 @@ const usersModelToObject = (usersModel: any) => {
    }
 }
 
+const findCompanyModelOrError = async (companyId: string) => {
+   
+   const companyModel = await CompanyModel.findById(companyId);
+
+   if (!companyModel) {
+      throw 'Company not found';
+   }
+   
+   return companyModel;
+}
+
 const getAllCompanies = async (req: Request, res: Response) => {
    
    const companiesModel = await CompanyModel.find();
@@ -63,23 +74,20 @@ const createCompany = async (req: Request, res: Response) => {
 const getCompanyById = async (req: Request, res: Response) => {
 
    const { id } = req.params;
+   let companyModel;
    
    try {
+      
       validObjectIdOrError(id, 'Invalid company id');
+      
+      companyModel = await findCompanyModelOrError(id);
+      
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
-   const companyModel = await CompanyModel.findById(id);
-
-   if (!companyModel) {
-      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
-   }
-   
-   const companyObject = companyModelToObject(companyModel);
-
    res.status(StatusCodes.OK).send({
-      data: companyObject
+      data: companyModelToObject(companyModel)
    })
 };
 
@@ -88,20 +96,20 @@ const updateCompany = async (req: Request, res: Response) => {
    const { id } = req.params;
    const { name } = req.body;
    
+   let companyModel;
+   
    try {
+      
       validObjectIdOrError(id, 'Invalid company id');
       isOfTypeOrError(name, 'string', 'Invalid company name')
       existsOrError(name, 'Invalid company name');
+      
+      companyModel = await findCompanyModelOrError(id);
+      
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
-   const companyModel = await CompanyModel.findById(id);
-
-   if (!companyModel) {
-      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
-   }
-
    const companyNameModel = await CompanyModel.findOne({ name: name });
    if (companyNameModel && companyNameModel.id !== id) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError('A company with this name already exists'));
@@ -129,19 +137,18 @@ const updateCompany = async (req: Request, res: Response) => {
 const deleteCompany = async (req: Request, res: Response) => {
   
    const { id } = req.params;
+   let companyModel;
    
    try {
+      
       validObjectIdOrError(id, 'Invalid company id');
+
+      companyModel = await findCompanyModelOrError(id);
+      
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
-   const companyModel = await CompanyModel.findById(id);
-
-   if (!companyModel) {
-      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
-   }
-
    // TODO check if company has users
    // TODO check if company has units
    
@@ -158,19 +165,18 @@ const deleteCompany = async (req: Request, res: Response) => {
 const getUsersByCompanyId = async (req: Request, res: Response) => {
 
    const { companyId } = req.params;
+   let companyModel;
    
    try {
+      
       validObjectIdOrError(companyId, 'Invalid company id');
+
+      companyModel = await findCompanyModelOrError(companyId);
+      
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
-   const companyModel = await CompanyModel.findById(companyId);
-
-   if (!companyModel) {
-      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
-   }
-
    const users = [];
 
    for (const user of companyModel.users) {
@@ -188,20 +194,19 @@ const createUserInCompany = async (req: Request, res: Response) => {
    
    const { companyId } = req.params;
    const { name } = req.body;
+   let companyModel;
    
    try {
+      
       validObjectIdOrError(companyId, 'Invalid company id');
       isOfTypeOrError(name, 'string', 'Invalid user name')
+      
+      companyModel = await findCompanyModelOrError(companyId);
+      
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
    
-   const companyModel = await CompanyModel.findById(companyId);
-
-   if (!companyModel) {
-      return res.status(StatusCodes.NOT_FOUND).send(createError('Company not found'));
-   }
-
    // TODO check if user name already exists in company
    
    companyModel.users.push({
