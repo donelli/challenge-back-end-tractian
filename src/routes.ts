@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { getAllCompanies, createCompany, getCompanyById, updateCompany, deleteCompany } from './api/company'
-import { createUserInCompany, getUsersByCompanyId } from './api/user';
+import { createUserInCompany, deleteUser, getUserById, getUsersByCompanyId, updateUser } from './api/user';
 
 const router = Router()
 
@@ -16,5 +16,10 @@ router.route('/companies/:id')
 router.route('/companies/:companyId/users')
 .get(getUsersByCompanyId)
 .post(createUserInCompany);
+
+router.route('/companies/:companyId/users/:userId')
+.get(getUserById)
+.put(updateUser)
+.delete(deleteUser);
 
 export { router as mainRouter }
