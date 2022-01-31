@@ -1,4 +1,6 @@
-import { Router } from 'express'
+import { Request, Response, Router } from 'express'
+import path = require('path');
+import { uploadAssetImage } from './api/assets';
 import { getAllCompanies, createCompany, getCompanyById, updateCompany, deleteCompany } from './api/company'
 import { createUnitInCompany, deleteUnit, getUnitById, getUnitsByCompanyId, updateUnit } from './api/unit';
 import { createUserInCompany, deleteUser, getUserById, getUsersByCompanyId, updateUser } from './api/user';
@@ -37,5 +39,7 @@ router.route('/companies/:companyId/units/:unitId')
 .get(getUnitById)
 .put(updateUnit)
 .delete(deleteUnit);
+
+router.post('/uploadAssetImage', uploadAssetImage);
 
 export { router as mainRouter }

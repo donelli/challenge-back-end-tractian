@@ -3,3 +3,5 @@ dist
 .env
 **.js
 **.js.map
+public/uploads/**.png
+public/uploads/**.jpg

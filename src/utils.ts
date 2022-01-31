@@ -57,3 +57,25 @@ export const validObjectIdOrError = (objectId: any, msg: string) => {
       throw msg;
    }
 }
+
+/**
+ * Genrates a random string of a given length
+ * @param length length of the random string to be generated
+ */
+export const generateRandomString = (length: number): string => {
+   let result = "", seeds
+
+   for (let i = 0; i < length - 1; i++) {
+      //Generate seeds array, that will be the bag from where randomly select generated char
+      seeds = [
+         Math.floor(Math.random() * 10) + 48,
+         Math.floor(Math.random() * 25) + 65,
+         Math.floor(Math.random() * 25) + 97
+      ]
+
+      //Choise randomly from seeds, convert to char and append to result
+      result += String.fromCharCode(seeds[Math.floor(Math.random() * 3)])
+   }
+
+   return result
+}

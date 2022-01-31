@@ -17,6 +17,8 @@ initMongoose()
    const PORT = process.env.PORT
    
    app.use('/api/v1/', mainRouter);
+   
+   app.use('/uploads', express.static(__dirname + '/../public/uploads'));
 
    app.listen(PORT, () => console.log(`app running on port ${PORT}`))
    
