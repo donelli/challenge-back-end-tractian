@@ -44,7 +44,7 @@ This app is deployed to Heroku. Url: [http://challenge-back-end-tractian.herokua
 ### Errors
 
 In case of an error, the API returns the object below describing the error that occurs
-```json
+```jsonc
 {
    "message": "string"
 }
@@ -55,7 +55,7 @@ In case of an error, the API returns the object below describing the error that 
 #### Companies
 
 - `GET /api/v1/companies` - Get all companies
-```json
+```jsonc
 // Response body:
 {
    "count": "number",
@@ -69,7 +69,7 @@ In case of an error, the API returns the object below describing the error that 
 ```
 
 - `GET /api/v1/companies/:id` - Get company by id
-```json
+```jsonc
 // Response body:
 {
    "data": {
@@ -81,7 +81,7 @@ In case of an error, the API returns the object below describing the error that 
 
 - `POST /api/v1/companies` - Create a new company
 - `PUT /api/v1/companies/:id` - Updates a company
-```json
+```jsonc
 // Request body:
 {
    "name": "string"
@@ -101,7 +101,7 @@ In case of an error, the API returns the object below describing the error that 
 #### Users
 
 - `GET /api/v1/companies/:companyId/users` - Get all users from a company
-```json
+```jsonc
 // Response body:
 {
    "count": "number",
@@ -114,8 +114,8 @@ In case of an error, the API returns the object below describing the error that 
 }
 ```
 
-- `GET /api/v1/companies/:companyId/users/:userId` - Updates a user in a specific company
-```json
+- `GET /api/v1/companies/:companyId/users/:userId` - Get a user by id in a specific company
+```jsonc
 // Response body:
 {
    "data": {
@@ -127,7 +127,7 @@ In case of an error, the API returns the object below describing the error that 
 
 - `POST /api/v1/companies/:companyId/users` - Create a new user in a specific company
 - `PUT /api/v1/companies/:companyId/users/:userId` - Updates a user in a specific company
-```json
+```jsonc
 // Request body:
 {
    "name": "string"
@@ -143,3 +143,49 @@ In case of an error, the API returns the object below describing the error that 
 ```
 
 - `DELETE /api/v1/companies/:companyId/users/:userId` - Delete a company by id
+
+#### Units
+
+- `GET /api/v1/companies/:companyId/units` - Get all units from a company
+```jsonc
+// Response body:
+{
+   "count": "number",
+   "data": [
+      {
+         "id": "string",
+         "name": "string"
+      },
+   ]
+}
+```
+
+- `GET /api/v1/companies/:companyId/units/:unitId` - Get a unit by id in a specific company
+```jsonc
+// Response body:
+{
+   "data": {
+      "id": "string",
+      "name": "string"
+   }
+}
+```
+
+- `POST /api/v1/companies/:companyId/units` - Create a new unit in a specific company
+- `PUT /api/v1/companies/:companyId/units/:unitId` - Updates a unit in a specific company
+```jsonc
+// Request body:
+{
+   "name": "string"
+}
+
+// Response body:
+{
+   "data": {
+      "id": "string",
+      "name": "string"
+   }
+}
+```
+
+- `DELETE /api/v1/companies/:companyId/units/:unitId` - Delete a company by id
