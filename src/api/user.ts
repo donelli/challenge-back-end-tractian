@@ -1,9 +1,8 @@
-import { createError, isOfTypeOrError, validObjectIdOrError } from './../utils';
+import { createError, isOfTypeOrError } from './../utils';
 
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes';
 import { findCompanyModelOrError } from './company';
-import { ObjectId } from 'mongodb';
 
 const usersModelToObject = (usersModel: any) => {
    return {id: usersModel.id,
