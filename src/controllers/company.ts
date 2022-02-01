@@ -1,4 +1,4 @@
-import { createError, existsOrError, isOfTypeOrError, validObjectIdOrError } from './../utils';
+import { createError, existsOrError, isOfTypeOrError, validObjectIdOrError } from '../utils';
 
 import { Request, Response } from 'express'
 import { CompanyModel } from '../models/company'

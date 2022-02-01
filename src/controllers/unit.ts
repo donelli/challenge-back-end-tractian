@@ -1,4 +1,4 @@
-import { createError, isOfTypeOrError } from './../utils';
+import { createError, isOfTypeOrError } from '../utils';
 
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes';
