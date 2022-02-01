@@ -198,7 +198,33 @@ const getAssetById = async (req: Request, res: Response) => {
 }
 
 const deleteAsset = async (req: Request, res: Response) => {
-   res.send("not implemented yet");
+   
+   const { companyId, unitId, assetId } = req.params;
+   let companyModel, unitIndex: number, assetIndex: number;
+   
+   try {
+      
+      const resp = await findAssetInCompanyAndUnitOrError(companyId, unitId, assetId);
+      ({companyModel, unitIndex, assetIndex} = resp);
+      
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+
+   companyModel.units[unitIndex].assets.splice(assetIndex, 1);
+
+   companyModel.save()
+   .then((company) => {
+      
+      res.sendStatus(StatusCodes.OK);
+   })
+   .catch(err => {
+      
+      console.log(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(createError('Error deleting asset'));
+      
+   });
+   
 }
 
 const updateAsset = async (req: Request, res: Response) => {
