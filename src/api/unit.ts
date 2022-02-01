@@ -199,5 +199,7 @@ export {
    createUnitInCompany,
    getUnitById,
    deleteUnit,
-   updateUnit
+   updateUnit,
+
+   findCompanyAndUnitOrError
 }

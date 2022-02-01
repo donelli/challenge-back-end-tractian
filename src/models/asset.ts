@@ -1,12 +1,19 @@
 
 import { Schema, model } from 'mongoose'
+import { User } from './user';
 
+export enum AssertStatus {
+   RUNNING = 'RUNNING',
+   ALERTING = 'ALERTING',
+   STOPPED = 'STOPPED'
+}
+ 
 interface Asset {
    name: string,
    description: string,
    model: string,
-   owner: string,
-   status: string,
+   owner: User,
+   status: AssertStatus,
    image: string,
    health_level: Number,
 }
@@ -25,11 +32,13 @@ const AssetSchema = new Schema<Asset>({
       required: true
    },
    owner: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true
    },
    status: {
       type: String,
+      enum: AssertStatus,
+      default: AssertStatus.STOPPED,
       required: true
    },
    image: {
@@ -38,7 +47,8 @@ const AssetSchema = new Schema<Asset>({
    },
    health_level: {
       type: Number,
-      required: true
+      required: true,
+      default: 100
    }
 })
 
