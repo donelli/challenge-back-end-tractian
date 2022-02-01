@@ -1,19 +1,21 @@
 
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 import { User } from './user';
 
-export enum AssertStatus {
+export enum AssetStatus {
    RUNNING = 'RUNNING',
    ALERTING = 'ALERTING',
    STOPPED = 'STOPPED'
 }
  
 interface Asset {
+   id?: Types.ObjectId,
+   _id?: Types.ObjectId,
    name: string,
    description: string,
    model: string,
    owner: User,
-   status: AssertStatus,
+   status: AssetStatus,
    image: string,
    health_level: Number,
 }
@@ -37,8 +39,8 @@ const AssetSchema = new Schema<Asset>({
    },
    status: {
       type: String,
-      enum: AssertStatus,
-      default: AssertStatus.STOPPED,
+      enum: AssetStatus,
+      default: AssetStatus.STOPPED,
       required: true
    },
    image: {

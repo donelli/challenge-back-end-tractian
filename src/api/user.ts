@@ -197,5 +197,7 @@ export {
    createUserInCompany,
    getUserById,
    deleteUser,
-   updateUser
+   updateUser,
+
+   findCompanyAndUserOrError
 }
