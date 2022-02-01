@@ -2,14 +2,16 @@ import { createError, existsOrError, isOfTypeOrError } from '../utils';
 
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes';
-import { findCompanyModelOrError } from './company';
 import { uploadFile } from '../middlewares/upload';
-import * as url from 'url';
 import { findCompanyAndUnitOrError } from './unit';
 import { findCompanyAndUserOrError } from './user';
 import { existsSync } from 'fs';
 import path = require('path');
 import { AssetStatus } from '../models/asset';
+
+const assetFileNameToUrl = (fileName: string) => {
+   return process.env.API_BASE_URL + (process.env.API_BASE_URL.endsWith('/') ? '': '/') + "uploads/" + fileName
+}
 
 const assetModelToObject = (assetModel: any) => {
    return {
@@ -18,10 +20,31 @@ const assetModelToObject = (assetModel: any) => {
       description: assetModel.description,
       model: assetModel.model,
       owner: assetModel.owner,
-      image: assetModel.image,
+      image: assetFileNameToUrl(assetModel.image),
       health_level: assetModel.health_level,
       status: assetModel.status
    }
+}
+
+const findAssetInCompanyAndUnitOrError = async (companyId: string, unitId: string, assetId: string) => {
+   
+   const res = await findCompanyAndUnitOrError(companyId, unitId);
+   
+   const companyModel = res.companyModel;
+   const unitIndex = res.unitIndex;
+   
+   const assetIndex = companyModel.units[unitIndex].assets.findIndex(asset => asset._id.toString() == assetId);
+   
+   if (assetIndex == -1) {
+      throw 'Asset not found in company and unit';
+   }
+
+   return {
+      companyModel,
+      unitIndex,
+      assetIndex
+   }
+   
 }
 
 const uploadAssetImage = async (req: Request, res: Response) => {
@@ -36,7 +59,7 @@ const uploadAssetImage = async (req: Request, res: Response) => {
       
       res.status(200).send({
          fileName: req.file.filename,
-         fileUrl: process.env.API_BASE_URL + (process.env.API_BASE_URL.endsWith('/') ? '': '/') + "uploads/" + req.file.filename
+         fileUrl: assetFileNameToUrl(req.file.filename)
       });
       
    } catch (err) {
@@ -46,7 +69,32 @@ const uploadAssetImage = async (req: Request, res: Response) => {
 }
 
 const getAssetsByCompanyAndUnitId = async (req: Request, res: Response) => {
-   res.send("not implemented yet");
+   
+   const { companyId, unitId } = req.params;
+   let companyModel, unitIndex: number;
+   
+   try {
+      
+      const resp = await findCompanyAndUnitOrError(companyId, unitId);
+      
+      companyModel = resp.companyModel;
+      unitIndex = resp.unitIndex;
+      
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+   
+   const assets = [];
+
+   for (const asset of companyModel.units[unitIndex].assets) {
+      assets.push(assetModelToObject(asset));
+   }
+   
+   res.status(StatusCodes.OK).send({
+      count: assets.length,
+      data: assets
+   });
+   
 }
 
 const createAsset = async (req: Request, res: Response) => {
@@ -122,7 +170,24 @@ const createAsset = async (req: Request, res: Response) => {
 }
 
 const getAssetById = async (req: Request, res: Response) => {
-   res.send("not implemented yet");
+   
+   const { companyId, unitId, assetId } = req.params;
+   let companyModel, unitIndex: number, assetIndex: number;
+   
+   try {
+      
+      const resp = await findAssetInCompanyAndUnitOrError(companyId, unitId, assetId);
+      
+      ({companyModel, unitIndex, assetIndex} = resp);
+      
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+   
+   res.status(StatusCodes.OK).send({
+      data: assetModelToObject(companyModel.units[unitIndex].assets[assetIndex])
+   });
+   
 }
 
 const deleteAsset = async (req: Request, res: Response) => {
