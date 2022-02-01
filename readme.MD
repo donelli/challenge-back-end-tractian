@@ -189,3 +189,99 @@ In case of an error, the API returns the object below describing the error that 
 ```
 
 - `DELETE /api/v1/companies/:companyId/units/:unitId` - Delete a company by id
+
+#### Assets
+
+- `POST /api/v1/uploadAssetImage` - Uploads a image for an asset
+
+- `GET /api/v1/companies/:companyId/units/:unitId/assets` - Get all assets from a unit
+```jsonc
+// Response body:
+{
+   "count": "number",
+   "data": [
+      {
+         "id": "string",
+         "name": "string",
+         "description": "string",
+         "model": "string",
+         "owner": "string (owner ID)",
+         "image": "string (image URL)",
+         "health_level": "number",
+         "status": "RUNNING | ALERTING | STOPPED"
+      },
+   ]
+}
+```
+
+- `GET /api/v1/companies/:companyId/units/:unitId/assets/:assetId` - Get a asset by id in a specific company and unit
+```jsonc
+// Response body:
+{
+   "data": {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "model": "string",
+      "owner": "string (owener ID)",
+      "image": "string (image URL)",
+      "health_level": "number",
+      "status": "stringEnum: RUNNING | ALERTING | STOPPED"
+   }
+}
+```
+
+- `POST /api/v1/companies/:companyId/units/:unitId/assets/` - Create a new asset in a specific company and unit
+- `PUT /api/v1/companies/:companyId/units/:unitId/assets/:assetId` - Updates a asset in a specific company and unit
+```jsonc
+// Request body:
+{
+   "name": "string",
+   "description": "string",
+   "model": "string",
+   "ownerId": "string (owner ID)",
+   "imageId": "string (fileName returned by '/api/v1/uploadAssetImage')",
+   "health_level": "number",
+   "status": "stringEnum: RUNNING | ALERTING | STOPPED"
+}
+
+// Response body:
+{
+   "data": {
+      "id": "string",
+      "name": "string",
+      "description": "string",
+      "model": "string",
+      "owner": "string (owener ID)",
+      "image": "string (image URL)",
+      "health_level": "number",
+      "status": "stringEnum: RUNNING | ALERTING | STOPPED"
+   }
+}
+```
+
+- `DELETE /api/v1/companies/:companyId/units/:unitId` - Delete a company by id
+
+- `GET /api/v1/companies/:companyId/assets` - Get all assets from a company
+```jsonc
+// Response body:
+{
+   "count": "number",
+   "data": [
+      {
+         "id": "string",
+         "name": "string",
+         "description": "string",
+         "model": "string",
+         "owner": "string (owner ID)",
+         "image": "string (image URL)",
+         "health_level": "number",
+         "status": "RUNNING | ALERTING | STOPPED",
+         "unit": {
+            "id": "string",
+            "name": "string",
+            "assetCount": "number"
+         }
+      },
+   ]
+}
