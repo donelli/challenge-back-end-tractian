@@ -129,6 +129,10 @@ const deleteUnit = async (req: Request, res: Response) => {
       companyModel = res.companyModel;
       unitIndex = res.unitIndex;
       
+      if (companyModel.units[unitIndex].assets.length > 0) {
+         throw 'This unit has assets, please remove them first';
+      }
+      
    } catch (error) {
       return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
    }
