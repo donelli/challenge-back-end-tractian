@@ -7,7 +7,8 @@ import { findCompanyModelOrError } from './company';
 const unitModelToObject = (unitModel: any) => {
    return {
       id: unitModel.id,
-      name: unitModel.name
+      name: unitModel.name,
+      assetCount: unitModel.assets?.length,
    }
 }
 
