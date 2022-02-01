@@ -1,5 +1,6 @@
 
 import { Schema, model, Types } from 'mongoose'
+import { Unit } from './unit';
 import { User } from './user';
 
 export enum AssetStatus {
@@ -18,6 +19,7 @@ interface Asset {
    status: AssetStatus,
    image: string,
    health_level: Number,
+   unit?: Unit
 }
 
 const AssetSchema = new Schema<Asset>({

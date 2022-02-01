@@ -3,11 +3,12 @@ import { createError, existsOrError, isOfTypeOrError } from '../utils';
 import { Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes';
 import { uploadFile } from '../middlewares/upload';
-import { findCompanyAndUnitOrError } from './unit';
+import { findCompanyAndUnitOrError, unitModelToObject } from './unit';
 import { findCompanyAndUserOrError } from './user';
 import { existsSync } from 'fs';
 import path = require('path');
 import { AssetStatus } from '../models/asset';
+import { findCompanyModelOrError } from './company';
 
 const assetFileNameToUrl = (fileName: string) => {
    return process.env.API_BASE_URL + (process.env.API_BASE_URL.endsWith('/') ? '': '/') + "uploads/" + fileName
@@ -22,7 +23,8 @@ const assetModelToObject = (assetModel: any) => {
       owner: assetModel.owner,
       image: assetFileNameToUrl(assetModel.image),
       health_level: assetModel.health_level,
-      status: assetModel.status
+      status: assetModel.status,
+      unit: assetModel.unit ? unitModelToObject(assetModel.unit) : undefined
    }
 }
 
@@ -276,7 +278,31 @@ const updateAsset = async (req: Request, res: Response) => {
 }
 
 const getAllAssetsFromCompany = async (req: Request, res: Response) => {
-   res.send("not implemented yet");
+   
+   const { companyId } = req.params;
+   let companyModel;
+   
+   try {
+      
+      companyModel = await findCompanyModelOrError(companyId);
+      
+   } catch (error) {
+      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+   }
+
+   const assets = [];
+   
+   for (const unit of companyModel.units) {
+      for (const asset of unit.assets) {
+         asset.unit = unit;
+         assets.push(asset);
+      }
+   }
+   
+   res.status(StatusCodes.OK).send({
+      count: assets.length, 
+      data: assets.map(asset => assetModelToObject(asset))
+   });
 }
 
 export {

@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express'
 import path = require('path');
-import { createAsset, deleteAsset, getAssetById, getAssetsByCompanyAndUnitId, updateAsset, uploadAssetImage } from './api/asset';
+import { createAsset, deleteAsset, getAllAssetsFromCompany, getAssetById, getAssetsByCompanyAndUnitId, updateAsset, uploadAssetImage } from './api/asset';
 import { getAllCompanies, createCompany, getCompanyById, updateCompany, deleteCompany } from './api/company'
 import { createUnitInCompany, deleteUnit, getUnitById, getUnitsByCompanyId, updateUnit } from './api/unit';
 import { createUserInCompany, deleteUser, getUserById, getUsersByCompanyId, updateUser } from './api/user';
@@ -43,6 +43,9 @@ router.route('/companies/:companyId/units/:unitId')
 // Asset routes
 
 router.post('/uploadAssetImage', uploadAssetImage);
+
+router.route('/companies/:companyId/assets')
+.get(getAllAssetsFromCompany)
 
 router.route('/companies/:companyId/units/:unitId/assets')
 .get(getAssetsByCompanyAndUnitId)

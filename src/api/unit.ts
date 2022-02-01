@@ -202,5 +202,6 @@ export {
    deleteUnit,
    updateUnit,
 
-   findCompanyAndUnitOrError
+   findCompanyAndUnitOrError,
+   unitModelToObject
 }
