@@ -5,7 +5,9 @@ import { Asset, AssetSchema } from './asset'
 interface Unit {
    id?: Types.ObjectId,
    name: string,
-   assets: Asset[]
+   assets: Asset[],
+   createdAt?: Date,
+   updatedAt?: Date,
 }
 
 const UnitSchema = new Schema<Unit>({
@@ -14,6 +16,8 @@ const UnitSchema = new Schema<Unit>({
       required: true
    },
    assets: [AssetSchema]
+}, {
+   timestamps: true
 })
 
 const UnitModel = model("Unit", UnitSchema);

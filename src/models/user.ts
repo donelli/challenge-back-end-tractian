@@ -3,6 +3,8 @@ import { Schema, model, Types } from 'mongoose'
 interface User {
    id?: Types.ObjectId,
    name: string,
+   createdAt?: Date,
+   updatedAt?: Date,
 }
 
 const UserSchema = new Schema<User>({
@@ -10,6 +12,8 @@ const UserSchema = new Schema<User>({
       type: String,
       required: true
    }
+}, {
+   timestamps: true
 })
 
 const UserModel = model("User", UserSchema);

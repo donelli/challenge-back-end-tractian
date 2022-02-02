@@ -6,6 +6,8 @@ interface Company {
   name: string,
   users: User[],
   units: Unit[]
+  createdAt?: Date,
+  updatedAt?: Date,
 }
 
 const CompanySchema = new Schema<Company>({
@@ -15,6 +17,8 @@ const CompanySchema = new Schema<Company>({
   },
   users: [UserSchema],
   units: [UnitSchema]
+}, {
+  timestamps: true
 })
 
 const CompanyModel = model("Company", CompanySchema);

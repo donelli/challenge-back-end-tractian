@@ -9,6 +9,8 @@ const unitModelToObject = (unitModel: any) => {
       id: unitModel.id,
       name: unitModel.name,
       assetCount: unitModel.assets?.length,
+      createdAt: unitModel.createdAt,
+      updatedAt: unitModel.updatedAt
    }
 }
 

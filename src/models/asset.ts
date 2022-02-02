@@ -19,7 +19,9 @@ interface Asset {
    status: AssetStatus,
    image: string,
    health_level: Number,
-   unit?: Unit
+   unit?: Unit,
+   createdAt?: Date,
+   updatedAt?: Date,
 }
 
 const AssetSchema = new Schema<Asset>({
@@ -54,6 +56,8 @@ const AssetSchema = new Schema<Asset>({
       required: true,
       default: 100
    }
+}, {
+   timestamps: true
 })
 
 const AssetModel = model("Asset", AssetSchema);

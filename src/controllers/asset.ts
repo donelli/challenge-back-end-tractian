@@ -24,6 +24,8 @@ const assetModelToObject = (assetModel: any) => {
       image: assetFileNameToUrl(assetModel.image),
       health_level: assetModel.health_level,
       status: assetModel.status,
+      createdAt: assetModel.createdAt,
+      updatedAt: assetModel.updatedAt,
       unit: assetModel.unit ? unitModelToObject(assetModel.unit) : undefined
    }
 }

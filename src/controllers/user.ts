@@ -5,8 +5,11 @@ import { StatusCodes } from 'http-status-codes';
 import { findCompanyModelOrError } from './company';
 
 const usersModelToObject = (usersModel: any) => {
-   return {id: usersModel.id,
-      name: usersModel.name
+   return {
+      id: usersModel.id,
+      name: usersModel.name,
+      createdAt: usersModel.createdAt,
+      updatedAt: usersModel.updatedAt
    }
 }
 
