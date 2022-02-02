@@ -1,7 +1,7 @@
 
 export interface IProcessEnv {
    MONGOOSE_URL: string
-   PORT: number
+   PORT: string
    API_BASE_URL: string
 }
 
