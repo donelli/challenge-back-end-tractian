@@ -40,7 +40,7 @@ const findAssetInCompanyAndUnitOrError = async (companyId: string, unitId: strin
    const assetIndex = companyModel.units[unitIndex].assets.findIndex(asset => asset._id.toString() == assetId);
    
    if (assetIndex == -1) {
-      throw 'Asset not found in company and unit';
+      throw [StatusCodes.NOT_FOUND, 'Asset not found in company and unit'];
    }
 
    return {
@@ -85,7 +85,7 @@ const getAssetsByCompanyAndUnitId = async (req: Request, res: Response) => {
       unitIndex = resp.unitIndex;
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    const assets = [];
@@ -103,30 +103,30 @@ const getAssetsByCompanyAndUnitId = async (req: Request, res: Response) => {
 
 const validateAsset = async (companyId: any, body: any) => {
    
-   existsOrError(body.name, 'Invalid asset name!');
-   existsOrError(body.description, 'Invalid asset description!');
-   existsOrError(body.model, 'Invalid asset model!');
-   existsOrError(body.ownerId, 'Invalid asset ownerId!');
-   existsOrError(body.imageId, 'Invalid asset imageId!');
-   isOfTypeOrError(body.healthLevel, 'number', 'Invalid health level!');
-   isOfTypeOrError(body.status, 'string', 'Invalid asset status!');
+   existsOrError(body.name, StatusCodes.BAD_REQUEST, 'Invalid asset name!');
+   existsOrError(body.description, StatusCodes.BAD_REQUEST, 'Invalid asset description!');
+   existsOrError(body.model, StatusCodes.BAD_REQUEST, 'Invalid asset model!');
+   existsOrError(body.ownerId, StatusCodes.BAD_REQUEST, 'Invalid asset ownerId!');
+   existsOrError(body.imageId, StatusCodes.BAD_REQUEST, 'Invalid asset imageId!');
+   isOfTypeOrError(body.healthLevel, 'number', StatusCodes.BAD_REQUEST, 'Invalid health level!');
+   isOfTypeOrError(body.status, 'string', StatusCodes.BAD_REQUEST, 'Invalid asset status!');
    
    try {
       await findCompanyAndUserOrError(companyId, body.ownerId);
    } catch (error) {
-      throw 'Owner not found in company';
+      throw [StatusCodes.NOT_FOUND, 'Owner not found in company'];
    }
    
    if (!existsSync(path.join(__dirname, '../../public/uploads/' + body.imageId))) {
-      throw 'Asset image not found';
+      throw [StatusCodes.NOT_FOUND, 'Asset image not found'];
    }
    
    if (body.healthLevel < 0 || body.healthLevel > 100) {
-      throw 'Invalid health level, must be between 0 and 100';
+      throw [StatusCodes.BAD_REQUEST, 'Invalid health level, must be between 0 and 100'];
    }
    
    if (!Object.values(AssetStatus).includes(body.status)) {
-      throw 'Invalid status. Must be one of: ' + Object.values(AssetStatus).join(', ');
+      throw [StatusCodes.BAD_REQUEST, 'Invalid status. Must be one of: ' + Object.values(AssetStatus).join(', ')];
    }
    
 }
@@ -145,7 +145,7 @@ const createAsset = async (req: Request, res: Response) => {
       await validateAsset(companyId, req.body);
 
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
 
    const { name, description, model, ownerId, imageId, healthLevel, status } = req.body;
@@ -192,7 +192,7 @@ const getAssetById = async (req: Request, res: Response) => {
       ({companyModel, unitIndex, assetIndex} = resp);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    res.status(StatusCodes.OK).send({
@@ -212,7 +212,7 @@ const deleteAsset = async (req: Request, res: Response) => {
       ({companyModel, unitIndex, assetIndex} = resp);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[0]));
    }
 
    companyModel.units[unitIndex].assets.splice(assetIndex, 1);
@@ -244,7 +244,7 @@ const updateAsset = async (req: Request, res: Response) => {
       await validateAsset(companyId, req.body);
 
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
 
    const { name, description, model, ownerId, imageId, healthLevel, status } = req.body;
@@ -289,7 +289,7 @@ const getAllAssetsFromCompany = async (req: Request, res: Response) => {
       companyModel = await findCompanyModelOrError(companyId);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
 
    const assets = [];

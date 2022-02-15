@@ -16,9 +16,9 @@ export const createError = (msg: string) => {
  * @param type Type to be checked against
  * @param msg Error message to be throwed if type is not equals
  */
-export const isOfTypeOrError = (value: any, type: string, msg: string) => {
+export const isOfTypeOrError = (value: any, type: string, errorCode: number, msg: string) => {
    if (typeof value != type) {
-      throw msg;
+      throw [errorCode, msg];
    }
 }
 
@@ -27,10 +27,10 @@ export const isOfTypeOrError = (value: any, type: string, msg: string) => {
  * @param value Value to be checked
  * @param msg Error message to be throwed if value is not valid
  */
-export const existsOrError = (value: any, msg: string) => {
-   if (!value) throw msg;
-   if (Array.isArray(value) && value.length === 0) throw msg;
-   if (typeof value === 'string' && !value.trim()) throw msg;
+export const existsOrError = (value: any, errorCode: number, msg: string) => {
+   if (!value) throw [errorCode, msg];
+   if (Array.isArray(value) && value.length === 0) throw [errorCode, msg];
+   if (typeof value === 'string' && !value.trim()) throw [errorCode, msg];
 }
 
 /**
@@ -38,9 +38,9 @@ export const existsOrError = (value: any, msg: string) => {
  * @param value Value to be checked
  * @param msg Error message to be throwed if value is valid
  */
-export const notExistsOrError = (value: any, msg: string) => {
+export const notExistsOrError = (value: any, errorCode: number, msg: string) => {
    try {
-      existsOrError(value, msg)
+      existsOrError(value, errorCode, msg)
    } catch(msg) {
       return
    }
@@ -52,9 +52,9 @@ export const notExistsOrError = (value: any, msg: string) => {
  * @param objectId object to be checked
  * @param msg Error message to be throwed if value is valid
  */
-export const validObjectIdOrError = (objectId: any, msg: string) => {
+export const validObjectIdOrError = (objectId: any, errorCode: number, msg: string) => {
    if (!objectId || !isValidObjectId(objectId)) {
-      throw msg;
+      throw [ errorCode, msg ];
    }
 }
 

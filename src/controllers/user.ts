@@ -20,7 +20,7 @@ const findCompanyAndUserOrError = async (companyId: string, userId: string) => {
    const index = companyModel.users.findIndex(user => user.id.toString() === userId);
 
    if (index == -1) {
-      throw 'User not found in company';
+      throw [StatusCodes.NOT_FOUND, 'User not found in company'];
    }
    
    return { companyModel, userIndex: index };
@@ -36,7 +36,7 @@ const getUsersByCompanyId = async (req: Request, res: Response) => {
       companyModel = await findCompanyModelOrError(companyId);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    const users = [];
@@ -60,12 +60,12 @@ const createUserInCompany = async (req: Request, res: Response) => {
    
    try {
       
-      isOfTypeOrError(name, 'string', 'Invalid user name')
+      isOfTypeOrError(name, 'string', StatusCodes.BAD_REQUEST, 'Invalid user name')
       
       companyModel = await findCompanyModelOrError(companyId);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    if (companyModel.users.find(user => user.name === name)) {
@@ -107,7 +107,7 @@ const getUserById = async (req: Request, res: Response) => {
       userIndex = res.userIndex;
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
 
    const user = companyModel.users[userIndex];
@@ -130,7 +130,7 @@ const deleteUser = async (req: Request, res: Response) => {
       userIndex = res.userIndex;
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
 
    companyModel.users.splice(userIndex, 1);
@@ -158,14 +158,14 @@ const updateUser = async (req: Request, res: Response) => {
    
    try {
       
-      isOfTypeOrError(name, 'string', 'Invalid user name')
+      isOfTypeOrError(name, 'string', StatusCodes.BAD_REQUEST, 'Invalid user name')
       
       const res = await findCompanyAndUserOrError(companyId, userId);
       companyModel = res.companyModel;
       userIndex = res.userIndex;
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    let userNameIndex = companyModel.users.findIndex(user => user.name === name);

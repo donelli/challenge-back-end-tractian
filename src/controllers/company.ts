@@ -17,12 +17,12 @@ const companyModelToObject = (companyModel: any) => {
 
 const findCompanyModelOrError = async (companyId: string) => {
 
-   validObjectIdOrError(companyId, 'Invalid company id');
+   validObjectIdOrError(companyId, StatusCodes.BAD_REQUEST, 'Invalid company id');
    
    const companyModel = await CompanyModel.findById(companyId);
 
    if (!companyModel) {
-      throw 'Company not found';
+      throw [ StatusCodes.NOT_FOUND, 'Company not found' ];
    }
    
    return companyModel;
@@ -49,10 +49,10 @@ const createCompany = async (req: Request, res: Response) => {
    const { name } = req.body;
    
    try {
-      isOfTypeOrError(name, 'string', 'Invalid company name')
-      existsOrError(name, 'Invalid company name');
+      isOfTypeOrError(name, 'string', StatusCodes.BAD_REQUEST, 'Invalid company name')
+      existsOrError(name, StatusCodes.BAD_REQUEST, 'Invalid company name');
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    const companyModel = await CompanyModel.findOne({ name: name });
@@ -81,7 +81,7 @@ const getCompanyById = async (req: Request, res: Response) => {
       companyModel = await findCompanyModelOrError(id);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    res.status(StatusCodes.OK).send({
@@ -98,13 +98,13 @@ const updateCompany = async (req: Request, res: Response) => {
    
    try {
       
-      isOfTypeOrError(name, 'string', 'Invalid company name')
-      existsOrError(name, 'Invalid company name');
+      isOfTypeOrError(name, 'string', StatusCodes.BAD_REQUEST, 'Invalid company name')
+      existsOrError(name, StatusCodes.BAD_REQUEST, 'Invalid company name');
       
       companyModel = await findCompanyModelOrError(id);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    const companyNameModel = await CompanyModel.findOne({ name: name });
@@ -141,19 +141,16 @@ const deleteCompany = async (req: Request, res: Response) => {
       companyModel = await findCompanyModelOrError(id);
 
       if (companyModel.units.length > 0) {
-         throw 'This unit has units, please remove them first';
+         throw [StatusCodes.BAD_REQUEST, 'This unit has units, please remove them first'];
       }
       
       if (companyModel.users.length > 0) {
-         throw 'This unit has users, please remove them first';
+         throw [StatusCodes.BAD_REQUEST, 'This unit has users, please remove them first'];
       }
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
-   
-   // TODO check if company has users
-   // TODO check if company has units
    
    try {
       await companyModel.remove();

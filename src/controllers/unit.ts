@@ -21,7 +21,7 @@ const findCompanyAndUnitOrError = async (companyId: string, unitId: string) => {
    const index = companyModel.units.findIndex(unit => unit.id.toString() === unitId);
 
    if (index == -1) {
-      throw 'Unit not found in company';
+      throw [StatusCodes.NOT_FOUND, 'Unit not found in company'];
    }
    
    return { companyModel, unitIndex: index };
@@ -37,7 +37,7 @@ const getUnitsByCompanyId = async (req: Request, res: Response) => {
       companyModel = await findCompanyModelOrError(companyId);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    const units = [];
@@ -61,12 +61,12 @@ const createUnitInCompany = async (req: Request, res: Response) => {
    
    try {
       
-      isOfTypeOrError(name, 'string', 'Invalid unit name')
+      isOfTypeOrError(name, 'string', StatusCodes.BAD_REQUEST, 'Invalid unit name')
       
       companyModel = await findCompanyModelOrError(companyId);
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    if (companyModel.units.find(unit => unit.name === name)) {
@@ -109,7 +109,7 @@ const getUnitById = async (req: Request, res: Response) => {
       unitIndex = res.unitIndex;
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
 
    const unit = companyModel.units[unitIndex];
@@ -132,11 +132,11 @@ const deleteUnit = async (req: Request, res: Response) => {
       unitIndex = res.unitIndex;
       
       if (companyModel.units[unitIndex].assets.length > 0) {
-         throw 'This unit has assets, please remove them first';
+         throw [StatusCodes.BAD_REQUEST, 'This unit has assets, please remove them first'];
       }
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
 
    companyModel.units.splice(unitIndex, 1);
@@ -164,14 +164,14 @@ const updateUnit = async (req: Request, res: Response) => {
    
    try {
       
-      isOfTypeOrError(name, 'string', 'Invalid unit name')
+      isOfTypeOrError(name, 'string', StatusCodes.BAD_REQUEST, 'Invalid unit name')
       
       const res = await findCompanyAndUnitOrError(companyId, unitId);
       companyModel = res.companyModel;
       unitIndex = res.unitIndex;
       
    } catch (error) {
-      return res.status(StatusCodes.BAD_REQUEST).send(createError(error));
+      return res.status(error[0]).send(createError(error[1]));
    }
    
    let unitNameIndex = companyModel.units.findIndex(unit => unit.name === name);
