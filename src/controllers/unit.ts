@@ -144,7 +144,7 @@ const deleteUnit = async (req: Request, res: Response) => {
    companyModel.save()
    .then(() => {
       
-      res.sendStatus(StatusCodes.OK);
+      res.status(StatusCodes.OK).send({});
       
    })
    .catch(err => {

@@ -159,7 +159,7 @@ const deleteCompany = async (req: Request, res: Response) => {
       res.status(StatusCodes.BAD_REQUEST).send(createError('Error deleting company'));
    }
    
-   res.sendStatus(StatusCodes.OK);
+   res.status(StatusCodes.OK).send({});
 };
 
 export {

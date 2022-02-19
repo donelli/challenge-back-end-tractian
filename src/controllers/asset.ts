@@ -220,7 +220,7 @@ const deleteAsset = async (req: Request, res: Response) => {
    companyModel.save()
    .then((company) => {
       
-      res.sendStatus(StatusCodes.OK);
+      res.status(StatusCodes.OK).send({});
    })
    .catch(err => {
       
