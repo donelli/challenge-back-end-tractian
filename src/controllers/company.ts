@@ -112,7 +112,7 @@ const updateCompany = async (req: Request, res: Response) => {
       return res.status(StatusCodes.BAD_REQUEST).send(createError('A company with this name already exists'));
    }
    
-   // companyModel.name = name;
+   companyModel.name = name;
    
    companyModel.save()
    .then((company) => {
