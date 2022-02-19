@@ -62,7 +62,11 @@ In case of an error, the API returns the object below describing the error that 
    "data": [
       {
          "id": "string",
-         "name": "string"
+         "name": "string",
+         "userCount": "number",
+         "unitCount": "number",
+         "createdAt": "date/time",
+         "updatedAt": "date/time"
       },
    ]
 }
@@ -74,7 +78,11 @@ In case of an error, the API returns the object below describing the error that 
 {
    "data": {
       "id": "string",
-      "name": "string"
+      "name": "string",
+      "userCount": "number",
+      "unitCount": "number",
+      "createdAt": "date/time",
+      "updatedAt": "date/time"
    }
 }
 ```
@@ -91,7 +99,11 @@ In case of an error, the API returns the object below describing the error that 
 {
    "data": {
       "id": "string",
-      "name": "string"
+      "name": "string",
+      "userCount": "number",
+      "unitCount": "number",
+      "createdAt": "date/time",
+      "updatedAt": "date/time"
    }
 }
 ```
