@@ -141,11 +141,11 @@ const deleteCompany = async (req: Request, res: Response) => {
       companyModel = await findCompanyModelOrError(id);
 
       if (companyModel.units.length > 0) {
-         throw [StatusCodes.BAD_REQUEST, 'This unit has units, please remove them first'];
+         throw [StatusCodes.BAD_REQUEST, 'This company has units, please remove them first'];
       }
       
       if (companyModel.users.length > 0) {
-         throw [StatusCodes.BAD_REQUEST, 'This unit has users, please remove them first'];
+         throw [StatusCodes.BAD_REQUEST, 'This company has users, please remove them first'];
       }
       
    } catch (error) {
