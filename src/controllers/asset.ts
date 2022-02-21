@@ -307,10 +307,49 @@ const getAllAssetsFromCompany = async (req: Request, res: Response) => {
    });
 }
 
+const getSummaryOfAssetsStatus = async (req: Request, res: Response) => {
+   
+   const { companyId } = req.params;
+   let companyModel;
+   
+   try {
+      
+      companyModel = await findCompanyModelOrError(companyId);
+      
+   } catch (error) {
+      return res.status(error[0]).send(createError(error[1]));
+   }
+
+   const assetsStatus = [];
+   
+   for (const unit of companyModel.units) {
+      for (const asset of unit.assets) {
+         
+         const statusIndex = assetsStatus.findIndex(statusObj => statusObj.status == asset.status);
+         
+         if (statusIndex < 0) {
+            assetsStatus.push({
+               status: asset.status,
+               count: 1
+            });
+         } else {
+            assetsStatus[statusIndex].count++;
+         }
+         
+      }
+   }
+   
+   res.status(StatusCodes.OK).send({
+      count: assetsStatus.length, 
+      data: assetsStatus
+   });
+}
+
 export {
    uploadAssetImage,
    getAssetsByCompanyAndUnitId,
    getAllAssetsFromCompany,
+   getSummaryOfAssetsStatus,
    createAsset,
    getAssetById,
    deleteAsset,

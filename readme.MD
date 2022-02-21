@@ -297,3 +297,18 @@ In case of an error, the API returns the object below describing the error that 
       },
    ]
 }
+```
+
+- `GET /api/v1/companies/:companyId/assets/status` - Get a summary of the status of the assets
+```jsonc
+// Response body:
+{
+   "count": "number",
+   "data": [
+      {
+         "status": "RUNNING | ALERTING | STOPPED",
+         "count": "number"
+      },
+   ]
+}
+```
