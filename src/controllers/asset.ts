@@ -22,6 +22,7 @@ const assetModelToObject = (assetModel: any) => {
       model: assetModel.model,
       owner: assetModel.owner,
       image: assetFileNameToUrl(assetModel.image),
+      imageId: assetModel.image,
       health_level: assetModel.health_level,
       status: assetModel.status,
       createdAt: assetModel.createdAt,
