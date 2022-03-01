@@ -132,7 +132,17 @@ const deleteUser = async (req: Request, res: Response) => {
    } catch (error) {
       return res.status(error[0]).send(createError(error[1]));
    }
-
+   
+   for (const unit of companyModel.units) {
+      for (const asset of unit.assets) {
+         
+         if (asset.owner.toString() == userId) {
+            return res.status(StatusCodes.BAD_REQUEST).send(createError('User is assigned to a asset. Deletion is not allowed!'));
+         }
+         
+      }
+   }
+   
    companyModel.users.splice(userIndex, 1);
    
    companyModel.save()

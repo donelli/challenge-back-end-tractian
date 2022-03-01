@@ -15,7 +15,7 @@ interface Asset {
    name: string,
    description: string,
    model: string,
-   owner: User,
+   owner: Types.ObjectId,
    status: AssetStatus,
    image: string,
    health_level: Number,
