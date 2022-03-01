@@ -9,7 +9,7 @@ import { existsSync } from 'fs';
 import path = require('path');
 import { AssetStatus } from '../models/asset';
 import { findCompanyModelOrError } from './company';
-import { storeFileAtBucket } from '../config/s3-bucket';
+import { storeFileAtBucket, deleteFileFromBucket } from '../config/s3-bucket';
 
 const assetFileNameToUrl = (fileName: string) => {
    return process.env.AWS_BUCKET_BASE_URL + (process.env.AWS_BUCKET_BASE_URL.endsWith('/') ? '': '/') + fileName
@@ -219,12 +219,18 @@ const deleteAsset = async (req: Request, res: Response) => {
       return res.status(error[0]).send(createError(error[0]));
    }
 
+   const assetImageFileName = companyModel.units[unitIndex].assets[assetIndex].image;
+   
    companyModel.units[unitIndex].assets.splice(assetIndex, 1);
 
    companyModel.save()
-   .then((company) => {
+   .then(async (company) => {
       
-      res.status(StatusCodes.OK).send({});
+      deleteFileFromBucket(assetImageFileName)
+      .finally(() => {
+         res.status(StatusCodes.OK).send({});
+      });
+      
    })
    .catch(err => {
       
