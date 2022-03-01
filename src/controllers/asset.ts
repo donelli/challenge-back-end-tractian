@@ -121,9 +121,11 @@ const validateAsset = async (companyId: any, body: any) => {
       throw [StatusCodes.NOT_FOUND, 'Owner not found in company'];
    }
    
-   if (!existsSync(path.join(__dirname, '../../public/uploads/' + body.imageId))) {
-      throw [StatusCodes.NOT_FOUND, 'Asset image not found'];
-   }
+   // TODO check if image exists in S3
+   
+   // if (!existsSync(path.join(__dirname, '../../public/uploads/' + body.imageId))) {
+   //    throw [StatusCodes.NOT_FOUND, 'Asset image not found'];
+   // }
    
    if (body.healthLevel < 0 || body.healthLevel > 100) {
       throw [StatusCodes.BAD_REQUEST, 'Invalid health level, must be between 0 and 100'];
