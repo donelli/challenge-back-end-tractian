@@ -4,7 +4,7 @@ import * as path from 'path';
 import { promisify } from 'util';
 import { generateRandomString } from '../utils';
 
-const maxFileSize = 2 * 1024 * 1024; // 2 MB
+const maxFileSize = 4 * 1024 * 1024; // 4 MB
 
 let storage = multer.diskStorage({
    destination: (req, file, cb) => {
