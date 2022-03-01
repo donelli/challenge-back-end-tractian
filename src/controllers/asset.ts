@@ -9,9 +9,10 @@ import { existsSync } from 'fs';
 import path = require('path');
 import { AssetStatus } from '../models/asset';
 import { findCompanyModelOrError } from './company';
+import { storeFileAtBucket } from '../config/s3-bucket';
 
 const assetFileNameToUrl = (fileName: string) => {
-   return process.env.API_BASE_URL + (process.env.API_BASE_URL.endsWith('/') ? '': '/') + "uploads/" + fileName
+   return process.env.AWS_BUCKET_BASE_URL + (process.env.AWS_BUCKET_BASE_URL.endsWith('/') ? '': '/') + fileName
 }
 
 const assetModelToObject = (assetModel: any) => {
@@ -61,6 +62,8 @@ const uploadAssetImage = async (req: Request, res: Response) => {
       if (req.file == undefined) {
          return res.status(StatusCodes.BAD_REQUEST).send(createError('No file was provided!'));
       }
+      
+      await storeFileAtBucket(req.file.filename, path.join('./public/uploads/', req.file.filename) )
       
       res.status(200).send({
          fileName: req.file.filename,
