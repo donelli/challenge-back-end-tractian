@@ -38,3 +38,23 @@ export async function deleteFileFromBucket(fileName: string) {
       
    });
 };
+
+export async function checkIfFileExistsInBucket(fileName: string) {
+   
+   try {
+      await s3.headObject({
+         Bucket: process.env.AWS_S3_BUCKET,
+         Key: fileName,
+      }).promise();
+      
+      return '';
+      
+   } catch (error) {
+      if (error.name === 'NotFound') {
+        return 'File not found.';
+      } else {
+        return 'INTERNAL ERROR: ' + error.message;
+      }
+   }
+   
+};

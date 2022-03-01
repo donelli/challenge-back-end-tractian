@@ -9,7 +9,7 @@ import { existsSync } from 'fs';
 import path = require('path');
 import { AssetStatus } from '../models/asset';
 import { findCompanyModelOrError } from './company';
-import { storeFileAtBucket, deleteFileFromBucket } from '../config/s3-bucket';
+import { storeFileAtBucket, deleteFileFromBucket, checkIfFileExistsInBucket } from '../config/s3-bucket';
 
 const assetFileNameToUrl = (fileName: string) => {
    return process.env.AWS_BUCKET_BASE_URL + (process.env.AWS_BUCKET_BASE_URL.endsWith('/') ? '': '/') + fileName
@@ -121,11 +121,17 @@ const validateAsset = async (companyId: any, body: any) => {
       throw [StatusCodes.NOT_FOUND, 'Owner not found in company'];
    }
    
-   // TODO check if image exists in S3
+   const err = await checkIfFileExistsInBucket(body.imageId);
    
-   // if (!existsSync(path.join(__dirname, '../../public/uploads/' + body.imageId))) {
-   //    throw [StatusCodes.NOT_FOUND, 'Asset image not found'];
-   // }
+   if (err) {
+      
+      if (err.includes('INTERNAL ERROR')) {
+         throw [StatusCodes.INTERNAL_SERVER_ERROR, err];
+      } else {
+         throw [StatusCodes.NOT_FOUND, err];
+      }
+      
+   }
    
    if (body.healthLevel < 0 || body.healthLevel > 100) {
       throw [StatusCodes.BAD_REQUEST, 'Invalid health level, must be between 0 and 100'];
